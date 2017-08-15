@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang='en'>
+<head>
+	<body>
+	
+	<p id="userName"></p>
+	<p id="userLoginTime"></p>
+
+	<div id="time"></div><br/>
+	<div id='currentPos'></div><br/>
+
+	Sitting Time : 	<input type="text" id="sittingTime" value='0'><br/>
+	Standing Time : <input type="text" id="standingTime" value='0'><br/>
+
+	<button id='timeButton' onmouseover="this.style.color='red'"  onmouseout="this.style.color='black'" >Time Count</button>
+	<button id='showTimeArray' onmouseover="this.style.color='red'"  onmouseout="this.style.color='black'" >Show Array</button><br/>
+	<button id='resetTimeArray' onmouseover="this.style.color='red'"  onmouseout="this.style.color='black'" >Reset</button><br/>		
+
+	<div id="sitArrayText"></div><br/>
+	<div id="standArrayText"></div><br/>
+
+	</body>
+</head>
+</html>
+
+<script>
+	
+	var userName = prompt("What is your Name?");
+	var loginTime = new Date();	
+	
+	var sittingTime=0;
+	var standingTime=0;
+	var currentPosition='sit';
+	var m=0; /* Counter for Sit Position */
+	var n=0; /* Counter for Stand Position */
+	var arraySitTime = [];
+	var arrayStandTime = [];
+	var currTime;
+	var lastTime;
+	var currentTime;
+
+	if (userName != null || userName!=''){
+		document.getElementById('userName').innerHTML='Hi '+userName;
+	}
+	else{		
+		userName='Default User';
+		document.getElementById('userName').innerHTML='Hi '+userName;
+	}
+
+	document.getElementById('userLoginTime').innerHTML=loginTime.getHours() + ":" + loginTime.getMinutes();
+
+	// document.getElementById('currTime').value=Date();	
+
+	document.getElementById('timeButton').onclick = function (event){
+		if(currentPosition=='sit') 
+		{	
+			m++;			
+			//const currTime = Date.now();
+			currentTime = Date.now();
+			lastTime = Date.now();
+			document.getElementById('currentPos').innerHTML=currentPosition;
+			arraySitTime.push(m,currentTime);
+			resetSitTimeFunction();
+			// standFunction();
+			currentPosition='stand';			
+		}
+		else
+		{
+			n++;
+			currentTime = Date.now();
+			lastTime = Date.now();
+			//const currTime = Date.now();
+			document.getElementById('currentPos').innerHTML=currentPosition;
+			arrayStandTime.push(n,currentTime);			
+			currentPosition='sit';
+		}
+	}
+
+	document.getElementById('showTimeArray').onclick = function(event){
+		var i;
+		for(i=0;i<arraySitTime.length;i++){
+			document.getElementById('sitArrayText').innerHTML=arraySitTime;
+		}
+
+		for(i=0;i<arrayStandTime.length;i++){
+			document.getElementById('standArrayText').innerHTML=arrayStandTime;
+		}
+	}
+
+	document.getElementById('resetTimeArray').onclick = function(event){
+		
+		arraySitTime.length = 0;
+		document.getElementById('sitArrayText').innerHTML=arraySitTime;
+		m=0;
+
+		arrayStandTime.length = 0;
+		document.getElementById('standArrayText').innerHTML=arrayStandTime;
+		n=0;
+
+		resetSitTimeFunction();
+	} 
+
+	 function standFunction() 
+	 {    
+	 	currentTime = Date.now();    
+	 	if(currentTime - lastTime > 5000)   // 3600000
+	 	{         
+	 		// console.log('time to stand up!');    
+	 		alert("Hi "+userName+ " your have been sitting for too long !!!");
+	 	}    
+	 	// else lastTime = currentTime; 
+	 }; 
+
+	 function resetSitTimeFunction()
+	 {    
+	 	lastTime = Date.now(); 
+	 };
+
+	function checkTime(i){
+		if(i<10){
+			i="0"+i;
+		}
+		return i;
+	}
+
+	function startTime(){
+		var today = new Date();
+		var h = today.getHours();
+		var m = today.getMinutes();
+
+		m=checkTime(m);
+		// s=checkTime(s);
+
+		if (currentPosition=='stand'){
+			standFunction();
+		}
+
+		document.getElementById('time').innerHTML = h+":" + m ;
+
+		t=setTimeout(function(){
+			startTime()
+		},1000);
+	}
+
+	startTime();
+
+</script>
+
+<!--- 
+/* Code by Vampire */
+ let lastTime = 0; standFunction = () => {    const currentTime = Date.now();    if(currentTime - lastTime > 3600000){        console.log('time to stand up!');    }    else lastTime = currentTime; }; sitFunction = () => {    lastTime = 0; };  -->
