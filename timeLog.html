@@ -39,6 +39,8 @@
 	var lastTime;
 	var currentTime;
 
+	<!-- TO GET USERNAME OR SET DEFAULT USER AS DEFAULT USERNAME -->
+
 	if (userName != null || userName!=''){
 		document.getElementById('userName').innerHTML='Hi '+userName;
 	}
@@ -49,32 +51,52 @@
 
 	document.getElementById('userLoginTime').innerHTML=loginTime.getHours() + ":" + loginTime.getMinutes();
 
-	// document.getElementById('currTime').value=Date();	
+	// document.getElementById('currTime').value=Date();
+
+	<!-- THE BELOW FUNCTION KEEPS TRACK OF CURRENT POSITION OF THE USER -->	
 
 	document.getElementById('timeButton').onclick = function (event){
 		if(currentPosition=='sit') 
 		{	
+			fillSitArray();
+		}
+		else
+		{
+			fillStandArray();
+		}
+	}
+
+	<!-- FUNCTION TO FILL SIT ARRAY -->
+
+	function fillSitArray(){
+
 			m++;			
-			//const currTime = Date.now();
+			
 			currentTime = Date.now();
 			lastTime = Date.now();
 			document.getElementById('currentPos').innerHTML=currentPosition;
 			arraySitTime.push(m,currentTime);
 			resetSitTimeFunction();
-			// standFunction();
-			currentPosition='stand';			
-		}
-		else
-		{
+			
+			currentPosition='stand';	
+
+	}
+
+	<!-- FUCNTION TO FILL STAND ARRAY -->
+
+	function fillStandArray(){
 			n++;
+
 			currentTime = Date.now();
 			lastTime = Date.now();
 			//const currTime = Date.now();
 			document.getElementById('currentPos').innerHTML=currentPosition;
 			arrayStandTime.push(n,currentTime);			
+
 			currentPosition='sit';
-		}
 	}
+
+	<!-- FUNCTION TO DISPLAY THE TIME ARRAYS FOR SITTING AND STANDING -->
 
 	document.getElementById('showTimeArray').onclick = function(event){
 		var i;
@@ -86,6 +108,8 @@
 			document.getElementById('standArrayText').innerHTML=arrayStandTime;
 		}
 	}
+
+	<!-- FUNCTION TO RESET THE TIME ARRAYS -->
 
 	document.getElementById('resetTimeArray').onclick = function(event){
 		
@@ -100,13 +124,15 @@
 		resetSitTimeFunction();
 	} 
 
+	<!-- FUNCTION TO KEEP TRACK FOR HOW LONG YOU HAVE BEEN SITTING -->
+
 	 function standFunction() 
 	 {    
 	 	currentTime = Date.now();    
 	 	if(currentTime - lastTime > 5000)   // 3600000
 	 	{         
-	 		// console.log('time to stand up!');    
-	 		alert("Hi "+userName+ " your have been sitting for too long !!!");
+	 		// alert("Hi "+userName+ " your have been sitting for too long !!!");
+	 		alertUser();
 	 	}    
 	 	// else lastTime = currentTime; 
 	 }; 
@@ -115,6 +141,26 @@
 	 {    
 	 	lastTime = Date.now(); 
 	 };
+
+	 <!-- FUNCTION TO EXTEND SITTING TIME OR CHANGE CURRENT POSITION THROUGH TIMER TRIGGER -->
+
+	 function alertUser(){
+	 	var retVal = confirm("Hi "+userName+" you have been sitting or too long. Are you taking a break now or do you want us to remind after 5 mins ? ");
+
+	 	if (retVal==true){
+	 		// document.write("User Stands Up");
+	 		fillStandArray();
+	 		return true;
+	 	}
+	 	else{
+	 		// document.write("User Sits");
+	 		lastTime += 5000;  // Increase time 
+	 		return false;
+	 	}
+	 }
+
+
+	 <!-- THE BELOW CODE BLOCK CONTROLS THE MAIN CLOCK AND TRIGGERS STAND FUNCTION -->
 
 	function checkTime(i){
 		if(i<10){
