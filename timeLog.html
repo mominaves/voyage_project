@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang='en'>
 <head>
+<link rel="stylesheet" href="css\modalcss.css">
 	<body>
 	
 	<p id="userName"></p>
@@ -14,7 +15,22 @@
 
 	<button id='timeButton' onmouseover="this.style.color='red'"  onmouseout="this.style.color='black'" >Time Count</button>
 	<button id='showTimeArray' onmouseover="this.style.color='red'"  onmouseout="this.style.color='black'" >Show Array</button><br/>
-	<button id='resetTimeArray' onmouseover="this.style.color='red'"  onmouseout="this.style.color='black'" >Reset</button><br/>		
+	<button id='resetTimeArray' onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" >Reset</button><br/>
+	
+	<!-- The Modal -->
+	
+	<div id="myModal" class="modal">
+	  	<!-- Modal content -->
+  		<div class="modal-content">
+    	<span class="close">&times;</span>
+    	<p id="alertMsg">You have been sitting for too long. Do you want to change your current position or give you a reminder after 5 minutes?</p>
+    	<div>
+    	<button id="changePosToStand">STAND</button> </div>
+    	<div>
+    	<button id="extendTimeByFiveSec">Extend</button></div>	
+
+  	</div>	
+  	</div>	
 
 	<div id="sitArrayText"></div><br/>
 	<div id="standArrayText"></div><br/>
@@ -131,7 +147,6 @@
 	 	currentTime = Date.now();    
 	 	if(currentTime - lastTime > 5000)   // 3600000
 	 	{         
-	 		// alert("Hi "+userName+ " your have been sitting for too long !!!");
 	 		alertUser();
 	 	}    
 	 	// else lastTime = currentTime; 
@@ -145,18 +160,34 @@
 	 <!-- FUNCTION TO EXTEND SITTING TIME OR CHANGE CURRENT POSITION THROUGH TIMER TRIGGER -->
 
 	 function alertUser(){
-	 	var retVal = confirm("Hi "+userName+" you have been sitting or too long. Are you taking a break now or do you want us to remind after 5 mins ? ");
+	 	// var retVal = confirm("Hi "+userName+" you have been sitting or too long. Are you taking a break now or do you want us to remind after 5 mins ? ");
 
-	 	if (retVal==true){
-	 		// document.write("User Stands Up");
+	 	modal.style.display = "block";	 	
+
+	 	document.getElementById("changePosToStand").onclick = function(event){
 	 		fillStandArray();
-	 		return true;
+	 		modal.style.display = "none";	 	 		
 	 	}
-	 	else{
-	 		// document.write("User Sits");
-	 		lastTime += 5000;  // Increase time 
-	 		return false;
+	 	
+	 	document.getElementById("extendTimeByFiveSec").onclick = function(event){
+	 		lastTime = Date.now()+5000;  // Increase time 
+	 		modal.style.display = "none";	 	 		
 	 	}
+	 }
+
+	 <!-- CODE FOR MODAL WINDOW --> 
+
+	 var modal = document.getElementById('myModal');
+	 // var btn = document.getElementById('myBtn');
+
+	 var span = document.getElementsByClassName("close")[0];
+	 /*
+	 btn.onclick = function(){
+	 	modal.style.display = "block";
+	 } */
+
+	 span.onclick = function(){
+	 	modal.style.display = "none"; 
 	 }
 
 
@@ -191,6 +222,8 @@
 	startTime();
 
 </script>
+
+
 
 <!--- 
 /* Code by Vampire */
