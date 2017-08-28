@@ -10,9 +10,10 @@
 	<div id="time"></div><br/>
 	<div id='currentPos'></div><br/>
 
-	Sitting Time : 	<input type="text" id="sittingTime" value='0'><br/>
+	Sitting Time  :	<input type="text" id="sittingTime" value='0'><br/>
 	Standing Time : <input type="text" id="standingTime" value='0'><br/>
-
+	
+ 
 	<button id='timeButton' onmouseover="this.style.color='red'"  onmouseout="this.style.color='black'" >Time Count</button>
 	<button id='showTimeArray' onmouseover="this.style.color='red'"  onmouseout="this.style.color='black'" >Show Array</button><br/>
 	<button id='resetTimeArray' onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" >Reset</button><br/>
@@ -25,15 +26,15 @@
     	<span class="close">&times;</span>
     	<p id="alertMsg">You have been sitting for too long. Do you want to change your current position or give you a reminder after 5 minutes?</p>
     	<div>
-    	<button id="changePosToStand">STAND</button> </div>
-    	<div>
+    	<button id="changePosToStand">STAND</button> 
     	<button id="extendTimeByFiveSec">Extend</button></div>	
 
   	</div>	
   	</div>	
 
-	<div id="sitArrayText"></div><br/>
-	<div id="standArrayText"></div><br/>
+	Sit Time Array  : <div id="sitArrayText"></div><br/>
+	Stand Time Array: <div id="standArrayText"></div><br/>
+	Combined Time Array : <div id="combinedArrayText"></div><br/>
 
 	</body>
 </head>
@@ -51,9 +52,10 @@
 	var n=0; /* Counter for Stand Position */
 	var arraySitTime = [];
 	var arrayStandTime = [];
-	var currTime;
-	var lastTime;
-	var currentTime;
+	var combinedArray = [];
+	
+	var lastTime = Date.now();
+	var currentTime = Date.now();
 
 	<!-- TO GET USERNAME OR SET DEFAULT USER AS DEFAULT USERNAME -->
 
@@ -66,6 +68,7 @@
 	}
 
 	document.getElementById('userLoginTime').innerHTML=loginTime.getHours() + ":" + loginTime.getMinutes();
+	document.getElementById('sittingTime').value= sittingTime;
 
 	// document.getElementById('currTime').value=Date();
 
@@ -91,9 +94,20 @@
 			currentTime = Date.now();
 			lastTime = Date.now();
 			document.getElementById('currentPos').innerHTML=currentPosition;
-			arraySitTime.push(m,currentTime);
+			
+			if (arraySitTime.length == 0) {
+				sittingTime = Number(currentTime) - Number(userLoginTime);
+			}
+			else
+			{
+				sittingTime = Number(sittingTime) + Number(currentTime) - Number(arrayStandTime.slice(-1)[0]); 
+			} 
+
+			arraySitTime.push(currentTime);
 			resetSitTimeFunction();
 			
+			document.getElementById('sittingTime').value= sittingTime;
+
 			currentPosition='stand';	
 
 	}
@@ -106,8 +120,9 @@
 			currentTime = Date.now();
 			lastTime = Date.now();
 			//const currTime = Date.now();
+			
 			document.getElementById('currentPos').innerHTML=currentPosition;
-			arrayStandTime.push(n,currentTime);			
+			arrayStandTime.push(currentTime);		
 
 			currentPosition='sit';
 	}
@@ -116,6 +131,7 @@
 
 	document.getElementById('showTimeArray').onclick = function(event){
 		var i;
+		var j=0;
 		for(i=0;i<arraySitTime.length;i++){
 			document.getElementById('sitArrayText').innerHTML=arraySitTime;
 		}
@@ -123,6 +139,31 @@
 		for(i=0;i<arrayStandTime.length;i++){
 			document.getElementById('standArrayText').innerHTML=arrayStandTime;
 		}
+		
+		combinedArray.length = 0;
+
+		if(arraySitTime.length>=arrayStandTime.length) {
+			j=arraySitTime.length;
+		}
+		else{
+			j=arrayStandTime.length;
+		}
+
+		for(i=0;i<j;i++){
+			
+			if (arraySitTime[i]!=undefined){
+				combinedArray.push(arraySitTime[i]);
+			}
+			
+			if (arrayStandTime[i]!=undefined){
+				combinedArray.push(arrayStandTime[i]);
+			}								
+		}
+
+		for(i=0;i<combinedArray.length;i++){
+			document.getElementById('combinedArrayText').innerHTML=combinedArray;
+		}
+
 	}
 
 	<!-- FUNCTION TO RESET THE TIME ARRAYS -->
@@ -135,6 +176,10 @@
 
 		arrayStandTime.length = 0;
 		document.getElementById('standArrayText').innerHTML=arrayStandTime;
+		n=0;
+
+		combinedArray.length = 0;
+		document.getElementById('combinedArrayText').innerHTML=combinedArray;
 		n=0;
 
 		resetSitTimeFunction();
@@ -154,7 +199,9 @@
 
 	 function resetSitTimeFunction()
 	 {    
-	 	lastTime = Date.now(); 
+	 	lastTime = Date.now();
+	 	currentPosition = 'sit'; 
+	 	document.getElementById('currentPos').innerHTML=currentPosition;
 	 };
 
 	 <!-- FUNCTION TO EXTEND SITTING TIME OR CHANGE CURRENT POSITION THROUGH TIMER TRIGGER -->
