@@ -94,14 +94,16 @@
 			currentTime = Date.now();
 			lastTime = Date.now();
 			document.getElementById('currentPos').innerHTML=currentPosition;
-			
+					
 			if (arraySitTime.length == 0) {
-				sittingTime = Number(currentTime) - Number(userLoginTime);
+				
+				sittingTime = Number(currentTime) - Number(loginTime);
+
 			}
 			else
-			{
+			{				
 				sittingTime = Number(sittingTime) + Number(currentTime) - Number(arrayStandTime.slice(-1)[0]); 
-			} 
+			} 		
 
 			arraySitTime.push(currentTime);
 			resetSitTimeFunction();
@@ -181,6 +183,8 @@
 		combinedArray.length = 0;
 		document.getElementById('combinedArrayText').innerHTML=combinedArray;
 		n=0;
+
+		document.getElementById('sittingTime').value = 0;
 
 		resetSitTimeFunction();
 	} 
